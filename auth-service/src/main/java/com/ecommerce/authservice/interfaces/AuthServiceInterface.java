@@ -1,12 +1,18 @@
 package com.ecommerce.authservice.interfaces;
 
+import org.springframework.stereotype.Service;
+
 import com.ecommerce.authservice.dto.AuthRequestDto;
+import com.ecommerce.authservice.dto.RegisterRequest;
+import com.ecommerce.authservice.dto.LoginRequest;
+import com.ecommerce.authservice.dto.AuthResponse;
 import com.ecommerce.authservice.entity.User;
 
 /**
  * Service interface for authentication operations.
  * This interface defines the contract for authentication business logic.
  */
+@Service    
 public interface AuthServiceInterface {
     
     /**
@@ -15,6 +21,13 @@ public interface AuthServiceInterface {
      * @return JWT token if authentication successful
      */
     String authenticate(AuthRequestDto authRequest);
+
+    /**
+     * Authenticate user using login request (username or email)
+     * @param loginRequest login credentials
+     * @return AuthResponse with tokens
+     */
+    AuthResponse authenticate(LoginRequest loginRequest);
     
     /**
      * Register a new user
@@ -22,6 +35,13 @@ public interface AuthServiceInterface {
      * @return Registered user entity
      */
     User registerUser(User user);
+
+    /**
+     * Register a new user from request, ensuring ROLE_USER is assigned
+     * @param request RegisterRequest containing username, email, password
+     * @return AuthResponse or user details
+     */
+    AuthResponse register(RegisterRequest request);
     
     /**
      * Validate JWT token
