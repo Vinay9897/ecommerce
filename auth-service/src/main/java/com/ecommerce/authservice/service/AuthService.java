@@ -2,10 +2,9 @@ package com.ecommerce.authservice.service;
 
 import com.ecommerce.authservice.dto.AuthRequestDto;
 import com.ecommerce.authservice.entity.User;
-import com.ecommerce.authservice.interfaces.AuthService;
+import com.ecommerce.authservice.interfaces.AuthServiceInterface;
 import com.ecommerce.authservice.repository.UserRepository;
 import com.ecommerce.authservice.exception.AuthenticationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +13,15 @@ import org.springframework.stereotype.Service;
  * This class provides the actual implementation of authentication business logic.
  */
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthService implements AuthServiceInterface {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
     
     @Override
     public String authenticate(AuthRequestDto authRequest) {

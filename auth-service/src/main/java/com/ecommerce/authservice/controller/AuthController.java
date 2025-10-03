@@ -2,9 +2,8 @@ package com.ecommerce.authservice.controller;
 
 import com.ecommerce.authservice.dto.AuthRequestDto;
 import com.ecommerce.authservice.entity.User;
-import com.ecommerce.authservice.interfaces.AuthService;
+import com.ecommerce.authservice.interfaces.AuthServiceInterface;
 import com.ecommerce.authservice.exception.AuthenticationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +20,9 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    private final AuthService authService; // Interface reference for dependency injection
+    private final AuthServiceInterface authService; // Interface reference for dependency injection
     
-    public AuthController(AuthService authService) {
+    public AuthController(AuthServiceInterface authService) {
         this.authService = authService;
     }
     

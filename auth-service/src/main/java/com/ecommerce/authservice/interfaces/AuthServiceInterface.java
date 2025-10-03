@@ -7,7 +7,7 @@ import com.ecommerce.authservice.entity.User;
  * Service interface for authentication operations.
  * This interface defines the contract for authentication business logic.
  */
-public interface AuthService {
+public interface AuthServiceInterface {
     
     /**
      * Authenticate user with username and password
