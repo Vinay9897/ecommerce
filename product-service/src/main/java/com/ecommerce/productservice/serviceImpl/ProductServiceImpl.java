@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getProductsByCategory(String category) {
         log.info("Fetching products by category: {}", category);
-        return productRepository.findByCategory(category)
+        return productRepository.findByCatalogueName(category)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> searchProductsByName(String name) {
         log.info("Searching products by name: {}", name);
-        return productRepository.findByNameContainingIgnoreCase(name)
+        return productRepository.findByProductNameContainingIgnoreCase(name)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -70,10 +70,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
-        log.info("Creating new product: {}", productDto.getName());
+        log.info("Creating new product: {}", productDto.getProductName());
         
-        if (productRepository.existsByNameIgnoreCase(productDto.getName())) {
-            throw new ProductAlreadyExistsException("Product already exists with name: " + productDto.getName());
+        if (productRepository.existsByProductNameIgnoreCase(productDto.getProductName())) {
+            throw new ProductAlreadyExistsException("Product already exists with name: " + productDto.getProductName());
         }
         
         Product product = convertToEntity(productDto);
@@ -90,9 +90,9 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         
         // Check if name is being changed and if new name already exists
-        if (!existingProduct.getName().equalsIgnoreCase(productDto.getName()) && 
-            productRepository.existsByNameIgnoreCase(productDto.getName())) {
-            throw new ProductAlreadyExistsException("Product already exists with name: " + productDto.getName());
+        if (!existingProduct.getProductName().equalsIgnoreCase(productDto.getProductName()) && 
+            productRepository.existsByProductNameIgnoreCase(productDto.getProductName())) {
+            throw new ProductAlreadyExistsException("Product already exists with name: " + productDto.getProductName());
         }
         
         BeanUtils.copyProperties(productDto, existingProduct, "id", "createdAt", "updatedAt");

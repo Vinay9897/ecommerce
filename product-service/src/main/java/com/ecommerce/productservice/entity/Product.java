@@ -3,7 +3,6 @@ package com.ecommerce.productservice.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,25 +21,43 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Product name is required")
+    @NotNull(message = "catalogueId is required")
     @Column(nullable = false)
-    private String name;
+    private Long catalogueId;
 
-    @Column(length = 1000)
-    private String description;
+    @NotBlank(message = "catalogueName is required")
+    @Column(nullable = false)
+    private String catalogueName;
 
-    @NotNull(message = "Price is required")
-    @Positive(message = "Price must be positive")
+    @NotNull(message = "subCatalogueId is required")
+    @Column(nullable = false)
+    private Long subCatalogueId;
+
+    @NotBlank(message = "subCatalogueName is required")
+    @Column(nullable = false)
+    private String subCatalogueName;
+
+    @NotBlank(message = "productName is required")
+    @Column(nullable = false)
+    private String productName;
+
+    private String shortDescription;
+
+    private String brand;
+
+    private String material;
+
+    @NotNull(message = "basePrice is required")
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private BigDecimal basePrice;
 
-    @NotNull(message = "Quantity is required")
     @Column(nullable = false)
-    private Integer quantity;
+    private Boolean isReturnable = Boolean.TRUE;
 
-    @NotBlank(message = "Category is required")
-    @Column(nullable = false)
-    private String category;
+    private String returnPolicy;
+
+    @Column(length = 4000)
+    private String longDescription;
 
     @Column(name = "image_url")
     private String imageUrl;

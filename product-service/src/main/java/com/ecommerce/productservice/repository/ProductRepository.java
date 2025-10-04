@@ -13,19 +13,19 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByCategory(String category);
+    List<Product> findByCatalogueName(String catalogueName);
 
-    List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findByProductNameContainingIgnoreCase(String productName);
 
-    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice")
+    @Query("SELECT p FROM Product p WHERE p.basePrice BETWEEN :minPrice AND :maxPrice")
     List<Product> findByPriceRange(@Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice);
 
-    @Query("SELECT p FROM Product p WHERE p.category = :category AND p.price BETWEEN :minPrice AND :maxPrice")
-    List<Product> findByCategoryAndPriceRange(@Param("category") String category, 
+    @Query("SELECT p FROM Product p WHERE p.catalogueName = :catalogueName AND p.basePrice BETWEEN :minPrice AND :maxPrice")
+    List<Product> findByCategoryAndPriceRange(@Param("catalogueName") String catalogueName, 
                                             @Param("minPrice") BigDecimal minPrice, 
                                             @Param("maxPrice") BigDecimal maxPrice);
 
-    Optional<Product> findByNameIgnoreCase(String name);
+    Optional<Product> findByProductNameIgnoreCase(String productName);
 
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByProductNameIgnoreCase(String productName);
 }

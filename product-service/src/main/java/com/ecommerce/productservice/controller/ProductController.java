@@ -92,7 +92,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping
+    @PostMapping("/addProduct")
     @Operation(summary = "Create a new product", description = "Add a new product to the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created successfully",
@@ -101,7 +101,7 @@ public class ProductController {
             @ApiResponse(responseCode = "409", description = "Product already exists")
     })
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
-        log.info("POST request to create new product: {}", productDto.getName());
+        log.info("POST request to create new product: {}", productDto.getProductName());
         ProductDto createdProduct = productService.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }

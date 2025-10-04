@@ -2,7 +2,6 @@ package com.ecommerce.productservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,20 +16,35 @@ public class ProductDto {
 
     private Long id;
 
-    @NotBlank(message = "Product name is required")
-    private String name;
+    @NotNull(message = "catalogueId is required")
+    private Long catalogueId;
 
-    private String description;
+    @NotBlank(message = "catalogueName is required")
+    private String catalogueName;
 
-    @NotNull(message = "Price is required")
-    @Positive(message = "Price must be positive")
-    private BigDecimal price;
+    @NotNull(message = "subCatalogueId is required")
+    private Long subCatalogueId;
 
-    @NotNull(message = "Quantity is required")
-    private Integer quantity;
+    @NotBlank(message = "subCatalogueName is required")
+    private String subCatalogueName;
 
-    @NotBlank(message = "Category is required")
-    private String category;
+    @NotBlank(message = "productName is required")
+    private String productName;
+
+    private String shortDescription;
+
+    private String brand;
+
+    private String material;
+
+    @NotNull(message = "basePrice is required")
+    private BigDecimal basePrice;
+
+    private Boolean isReturnable;
+
+    private String returnPolicy;
+
+    private String longDescription;
 
     private String imageUrl;
 
