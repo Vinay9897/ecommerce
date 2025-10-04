@@ -1,39 +1,55 @@
 package com.ecommerce.cartservice.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-/**
- * Data Transfer Object for Cart information.
- * This DTO handles cart data transfer between layers.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartDto {
-    
+
     private Long id;
-    
-    @NotNull(message = "User ID is required")
+
+    @NotNull(message = "userId is required")
     private Long userId;
-    
-    private String sessionId;
-    
-    private BigDecimal totalAmount;
-    
-    private Integer totalItems;
-    
-    private Boolean isActive;
-    
+
+    @NotNull(message = "productId is required")
+    private Long productId;
+
+    @NotNull(message = "quantity is required")
+    private Integer quantity;
+
+    private String productName;
+
+    private String shortDescription;
+
+    private String brand;
+
+    private String material;
+
+    @NotNull(message = "basePrice is required")
+    private BigDecimal basePrice;
+
+    private Boolean isReturnable = Boolean.TRUE;
+
+    private String returnPolicy;
+
+    private String longDescription;
+
+    private String imageUrl;
+
+
+
     private LocalDateTime createdAt;
-    
+
     private LocalDateTime updatedAt;
-    
-    private List<CartItemDto> cartItems;
+
+   
+
 }
