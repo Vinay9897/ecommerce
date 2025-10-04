@@ -16,22 +16,22 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class CatalogueController {
 
-    private final CatalogueRepository catalogRepository;
+    private final CatalogueRepository catalogueRepository;
 
     @PostMapping
-    public ResponseEntity<Catalogue> create(@Valid @RequestBody Catalogue catalog) {
-        Catalogue saved = catalogRepository.save(catalog);
+    public ResponseEntity<Catalogue> create(@Valid @RequestBody Catalogue catalogue) {
+        Catalogue saved = catalogueRepository.save(catalogue);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping
     public ResponseEntity<List<Catalogue>> findAll() {
-        return ResponseEntity.ok(catalogRepository.findAll());
+        return ResponseEntity.ok(catalogueRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Catalogue> findById(@PathVariable Long id) {
-        return catalogRepository.findById(id)
+        return catalogueRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
