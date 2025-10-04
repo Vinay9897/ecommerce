@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
+  
 
     @Value("${jwt.secret}")
     private String jwtSecret;
