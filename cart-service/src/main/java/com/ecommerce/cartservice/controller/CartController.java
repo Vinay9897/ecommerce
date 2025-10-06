@@ -18,11 +18,12 @@ public class CartController {
 
     private final CartRepository cartRepository;
 
-    @PostMapping
-    public ResponseEntity<CartDto> create(@Valid @RequestBody Cart cart) {
+    @PostMapping("createCart")
+    public ResponseEntity<Cart> create (@RequestBody Cart cart) {
+    // public ResponseEntity<Cart> create (@PathVariable Long userId, @PathVariable Long productId) {
 
-      //  Cart saved = cartRepository.save(cart);
-      CartDto saved = cartRepository.save(cart);
+       Cart saved = cartRepository.save(cart);
+    //  Cart saved = cartRepository.findByProductId(productId).get();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }

@@ -18,13 +18,13 @@ public class CatalogueController {
 
     private final CatalogueRepository catalogueRepository;
 
-    @PostMapping
+    @PostMapping("/addCatalogue")
     public ResponseEntity<Catalogue> create(@Valid @RequestBody Catalogue catalogue) {
         Catalogue saved = catalogueRepository.save(catalogue);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping
+    @GetMapping("getAllCatalogue")
     public ResponseEntity<List<Catalogue>> findAll() {
         return ResponseEntity.ok(catalogueRepository.findAll());
     }

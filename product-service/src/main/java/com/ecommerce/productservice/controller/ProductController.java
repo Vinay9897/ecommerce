@@ -29,7 +29,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping
+    @GetMapping("getAllProduct")
     @Operation(summary = "Get all products", description = "Retrieve a list of all products in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all products",
