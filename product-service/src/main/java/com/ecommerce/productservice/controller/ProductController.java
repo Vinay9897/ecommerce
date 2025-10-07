@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -92,6 +93,8 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addProduct")
     @Operation(summary = "Create a new product", description = "Add a new product to the system")
     @ApiResponses(value = {
@@ -106,6 +109,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing product", description = "Update product information by providing the product ID and new data")
     @ApiResponses(value = {
@@ -123,6 +127,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a product", description = "Remove a product from the system using its unique identifier")
     @ApiResponses(value = {
