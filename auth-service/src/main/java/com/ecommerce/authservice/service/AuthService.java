@@ -61,7 +61,7 @@ public class AuthService implements AuthServiceInterface {
         UserDetails principal = new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                Set.of(new SimpleGrantedAuthority("ROLE_USER"))
+                Set.of(new SimpleGrantedAuthority(user.getRoles().iterator().next().getName()))
         );
         return jwtUtils.generateAccessToken(principal);
     }

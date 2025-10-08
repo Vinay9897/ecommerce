@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -18,19 +19,29 @@ public class CartController {
 
     private final CartRepository cartRepository;
 
-    @PostMapping("createCart")
-    public ResponseEntity<Cart> create (@RequestBody Cart cart) {
-    // public ResponseEntity<Cart> create (@PathVariable Long userId, @PathVariable Long productId) {
+    
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/addToCart")
+    public ResponseEntity<Cart> addToCart(@RequestParam Long userId,
+                                          @RequestParam Long productId,
+                                          @RequestParam(defaultValue = "1") Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
-       Cart saved = cartRepository.save(cart);
-    //  Cart saved = cartRepository.findByProductId(productId).get();
+        Cart existing = cartRepository.findByUserIdAndProductId(userId, productId);
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + quantity);
+            Cart updated = cartRepository.save(existing);
+            return ResponseEntity.ok(updated);
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Cart>> findAll() {
-        return ResponseEntity.ok(cartRepository.findAll());
+        Cart newCart = new Cart();
+        newCart.setUserId(userId);
+        newCart.setProductId(productId);
+        newCart.setQuantity(quantity);
+        Cart created = cartRepository.save(newCart);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/{id}")
@@ -40,16 +51,14 @@ public class CartController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Cart>> findByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(cartRepository.findByUserId(userId));
     }
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Cart>> findByProductId(@PathVariable Long productId) {
-        return ResponseEntity.ok(cartRepository.findByProductId(productId));
-    }
-
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     public ResponseEntity<Cart> update(@PathVariable Long id, @Valid @RequestBody Cart cart) {
         return cartRepository.findById(id)
@@ -63,6 +72,7 @@ public class CartController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (cartRepository.existsById(id)) {
