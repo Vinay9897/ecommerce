@@ -1,6 +1,5 @@
-package com.ecommerce.apigateway.filter;
+package com.ecommerce.apigatewayservice.config.filter;
 
-import com.ecommerce.apigateway.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -10,6 +9,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.ecommerce.apigatewayservice.config.util.JwtUtil;
+
 import reactor.core.publisher.Mono;
 import java.util.List;
 
@@ -54,14 +56,22 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         System.out.println("R5");
 
         try {
+            System.out.println("R6");
+
             Claims claims = jwtUtil.validateToken(token);
+
             String username = claims.getSubject();
+            System.out.println(username);
             List<String> roles = jwtUtil.getRolesFromToken(token);
+            System.out.println(roles.toString());
 
             String path = request.getPath().value();    // http://localhost:8080/api/products/addProduct
             System.out.println("R7 path " + path);
             System.out.println("R7 roles " + roles);
-            if (path.equals("/api/products/addProduct") || path.startsWith("/api/products/addProduct/") || path.equals("/api/products/admin")) {
+            if (path.equals("/api/products/addProduct") || path.startsWith("/api/products/addProduct/") || path.equals("/api/products/admin"
+            || path.equals("/api/products/updateProduct/") || path.startsWith("/api/products/updateProduct/") 
+            || path.equals("/api/products/deleteProduct/") || path.startsWith("/api/products/deleteProduct/")
+            )) {
               
                 System.out.println("R6");
                 boolean isAdmin = roles.stream().anyMatch(r -> r.equalsIgnoreCase("ADMIN") || r.equalsIgnoreCase("ROLE_ADMIN"));

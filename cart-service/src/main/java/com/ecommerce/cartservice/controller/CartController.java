@@ -1,13 +1,15 @@
 package com.ecommerce.cartservice.controller;
 
+import com.ecommerce.cartservice.dto.CartDto;
+import com.ecommerce.cartservice.dto.ProductDto;
 import com.ecommerce.cartservice.entity.Cart;
 import com.ecommerce.cartservice.repository.CartRepository;
+import com.ecommerce.cartservice.service.ProductClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -18,9 +20,9 @@ import java.util.List;
 public class CartController {
 
     private final CartRepository cartRepository;
+    private final ProductClient productClient;
 
     
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/addToCart")
     public ResponseEntity<Cart> addToCart(@RequestParam Long userId,
                                           @RequestParam Long productId,
@@ -52,13 +54,32 @@ public class CartController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Cart>> findByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartRepository.findByUserId(userId));
+    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId) {
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        List<CartDto> result = carts.stream().map(cart -> {
+            ProductDto product = productClient.getProductById(cart.getProductId());
+            CartDto dto = new CartDto();
+            dto.setId(cart.getId());
+            dto.setUserId(cart.getUserId());
+            dto.setProductId(cart.getProductId());
+            dto.setQuantity(cart.getQuantity());
+            if (product != null) {
+                dto.setProductName(product.getProductName());
+                dto.setShortDescription(product.getShortDescription());
+                dto.setBrand(product.getBrand());
+                dto.setMaterial(product.getMaterial());
+                dto.setBasePrice(product.getBasePrice());
+                dto.setIsReturnable(product.getIsReturnable());
+                dto.setReturnPolicy(product.getReturnPolicy());
+                dto.setLongDescription(product.getLongDescription());
+                dto.setImageUrl(product.getImageUrl());
+            }
+            return dto;
+        }).toList();
+        return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     public ResponseEntity<Cart> update(@PathVariable Long id, @Valid @RequestBody Cart cart) {
         return cartRepository.findById(id)
@@ -72,7 +93,6 @@ public class CartController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (cartRepository.existsById(id)) {

@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("getAllProduct")
+    @GetMapping("/getAllProduct")
     @Operation(summary = "Get all products", description = "Retrieve a list of all products in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all products",
@@ -94,7 +93,6 @@ public class ProductController {
     }
 
     
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addProduct")
     @Operation(summary = "Create a new product", description = "Add a new product to the system")
     @ApiResponses(value = {
@@ -109,8 +107,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/updateProduct/{id}")
     @Operation(summary = "Update an existing product", description = "Update product information by providing the product ID and new data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product updated successfully",
@@ -127,8 +124,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteProduct/{id}")
     @Operation(summary = "Delete a product", description = "Remove a product from the system using its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Product deleted successfully"),

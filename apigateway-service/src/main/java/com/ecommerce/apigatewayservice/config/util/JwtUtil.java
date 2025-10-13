@@ -1,4 +1,4 @@
-package com.ecommerce.apigateway.util;
+package com.ecommerce.apigatewayservice.config.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +20,7 @@ public class JwtUtil {
   
 
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String jwtSecret = "jY2m8q9v3wLQx7s0ZpF8h6RkT2nU0xAq5bV9cY3dE4rW7xZ1pQ==";
 
     private volatile SecretKey signingKey;
 
@@ -28,8 +30,13 @@ public class JwtUtil {
             synchronized (this) {
                 localRef = signingKey;
                 if (localRef == null) {
-                    byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
-                    signingKey = localRef = Keys.hmacShaKeyFor(keyBytes);
+                    try {
+                        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                        byte[] keyBytes = digest.digest(jwtSecret.getBytes(StandardCharsets.UTF_8));
+                        signingKey = localRef = Keys.hmacShaKeyFor(keyBytes);
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new IllegalStateException("Unable to initialize JWT signing key", e);
+                    }
                 }
             }
         }
@@ -40,6 +47,7 @@ public class JwtUtil {
         if (token == null || token.isBlank()) {
             throw new IllegalArgumentException("JWT token is blank");
         }
+        System.out.println("P2");
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -48,6 +56,7 @@ public class JwtUtil {
     }
 
     public List<String> getRolesFromToken(String token) {
+        System.out.println("P1");
         Claims claims = validateToken(token);
         Object rolesClaim = claims.get("roles");
         if (rolesClaim == null) {
