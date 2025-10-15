@@ -1,6 +1,5 @@
-package com.ecommerce.apigateway.filter;
+package com.ecommerce.apigatewayservice.config.filter;
 
-import com.ecommerce.apigateway.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -10,6 +9,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.ecommerce.apigatewayservice.config.util.JwtUtil;
+
 import reactor.core.publisher.Mono;
 import java.util.List;
 
@@ -25,22 +27,67 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        String authorization = request.getHeaders().getFirst("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return unauthorized(exchange.getResponse());
+        // String path = request.getPath().value();
+        System.out.println("vinay1");
+
+        // Public endpoints (no token required)
+        String pathValue = request.getPath().value();
+       
+        if (pathValue.startsWith("/api/auth/")) {
+            return chain.filter(exchange); // Allow without token for auth service
         }
 
-        String token = authorization.substring(7);
-        try {
-            Claims claims = jwtUtil.validateToken(token);
-            String username = claims.getSubject();
-            List<String> roles = jwtUtil.getRolesFromToken(token);
+        System.out.println("vinay2");
 
-            String path = request.getPath().value();
-            if (path.startsWith("/api/products/admin/") || path.equals("/api/products/admin") ) {
+        System.out.println("R1");
+
+        String authorization = request.getHeaders().getFirst("Authorization");
+        System.out.println("R2");
+
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            System.out.println("R3");
+
+            return unauthorized(exchange.getResponse());
+        }
+        System.out.println("R4");
+
+        String token = authorization.substring(7);
+        System.out.println("R5");
+
+        try {
+            System.out.println("R6");
+
+            Claims claims = jwtUtil.validateToken(token);
+
+            String username = claims.getSubject();
+            System.out.println(username);
+            List<String> roles = jwtUtil.getRolesFromToken(token);
+            System.out.println(roles.toString());
+
+            String path = request.getPath().value();    // http://localhost:8080/api/products/addProduct
+            System.out.println("R7 path " + path);
+            System.out.println("R7 roles " + roles);
+            if (path.equals("/api/products/addProduct") || path.startsWith("/api/products/addProduct/") || path.equals("/api/products/admin"
+            || path.equals("/api/products/updateProduct/") || path.startsWith("/api/products/updateProduct/") 
+            || path.equals("/api/products/deleteProduct/") || path.startsWith("/api/products/deleteProduct/")
+            )) {
+              
+                System.out.println("R6");
                 boolean isAdmin = roles.stream().anyMatch(r -> r.equalsIgnoreCase("ADMIN") || r.equalsIgnoreCase("ROLE_ADMIN"));
-                if (!isAdmin) {
+                        System.out.println("R7");
+                        if (!isAdmin) {
+                            System.out.println("R8");
+                    return unauthorized(exchange.getResponse());
+                    // return forbidden(exchange.getResponse());
+                }
+            }
+
+            // Require USER role for all cart service endpoints
+            if (path.startsWith("/api/cart/")) {
+                boolean isUser = roles.stream()
+                        .anyMatch(r -> r.equalsIgnoreCase("USER") || r.equalsIgnoreCase("ROLE_USER"));
+                if (!isUser) {
                     return forbidden(exchange.getResponse());
                 }
             }
@@ -70,5 +117,3 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         return -1; // Ensure this runs early
     }
 }
-
-

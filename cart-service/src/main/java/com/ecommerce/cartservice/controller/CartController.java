@@ -1,7 +1,10 @@
 package com.ecommerce.cartservice.controller;
 
+import com.ecommerce.cartservice.dto.CartDto;
+import com.ecommerce.cartservice.dto.ProductDto;
 import com.ecommerce.cartservice.entity.Cart;
 import com.ecommerce.cartservice.repository.CartRepository;
+import com.ecommerce.cartservice.service.ProductClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,20 +20,30 @@ import java.util.List;
 public class CartController {
 
     private final CartRepository cartRepository;
+    private final ProductClient productClient;
 
-    @PostMapping("createCart")
-    public ResponseEntity<Cart> create (@RequestBody Cart cart) {
-    // public ResponseEntity<Cart> create (@PathVariable Long userId, @PathVariable Long productId) {
+    
+    @PostMapping("/addToCart")
+    public ResponseEntity<Cart> addToCart(@RequestParam Long userId,
+                                          @RequestParam Long productId,
+                                          @RequestParam(defaultValue = "1") Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
-       Cart saved = cartRepository.save(cart);
-    //  Cart saved = cartRepository.findByProductId(productId).get();
+        Cart existing = cartRepository.findByUserIdAndProductId(userId, productId);
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + quantity);
+            Cart updated = cartRepository.save(existing);
+            return ResponseEntity.ok(updated);
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Cart>> findAll() {
-        return ResponseEntity.ok(cartRepository.findAll());
+        Cart newCart = new Cart();
+        newCart.setUserId(userId);
+        newCart.setProductId(productId);
+        newCart.setQuantity(quantity);
+        Cart created = cartRepository.save(newCart);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/{id}")
@@ -40,14 +53,31 @@ public class CartController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Cart>> findByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartRepository.findByUserId(userId));
-    }
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Cart>> findByProductId(@PathVariable Long productId) {
-        return ResponseEntity.ok(cartRepository.findByProductId(productId));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId) {
+        List<Cart> carts = cartRepository.findByUserId(userId);
+        List<CartDto> result = carts.stream().map(cart -> {
+            ProductDto product = productClient.getProductById(cart.getProductId());
+            CartDto dto = new CartDto();
+            dto.setId(cart.getId());
+            dto.setUserId(cart.getUserId());
+            dto.setProductId(cart.getProductId());
+            dto.setQuantity(cart.getQuantity());
+            if (product != null) {
+                dto.setProductName(product.getProductName());
+                dto.setShortDescription(product.getShortDescription());
+                dto.setBrand(product.getBrand());
+                dto.setMaterial(product.getMaterial());
+                dto.setBasePrice(product.getBasePrice());
+                dto.setIsReturnable(product.getIsReturnable());
+                dto.setReturnPolicy(product.getReturnPolicy());
+                dto.setLongDescription(product.getLongDescription());
+                dto.setImageUrl(product.getImageUrl());
+            }
+            return dto;
+        }).toList();
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")

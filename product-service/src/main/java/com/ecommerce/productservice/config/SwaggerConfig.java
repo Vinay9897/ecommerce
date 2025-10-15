@@ -17,7 +17,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        new Server().url("http://localhost:8081").description("Local Development Server"),
+                        new Server().url("http://localhost:8082").description("Local Development Server"),
                         new Server().url("https://api.ecommerce.com").description("Production Server")
                 ))
                 .info(new Info()

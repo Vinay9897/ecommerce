@@ -29,7 +29,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("getAllProduct")
+    @GetMapping("/getAllProduct")
     @Operation(summary = "Get all products", description = "Retrieve a list of all products in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all products",
@@ -92,6 +92,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    
     @PostMapping("/addProduct")
     @Operation(summary = "Create a new product", description = "Add a new product to the system")
     @ApiResponses(value = {
@@ -106,7 +107,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateProduct/{id}")
     @Operation(summary = "Update an existing product", description = "Update product information by providing the product ID and new data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product updated successfully",
@@ -123,7 +124,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteProduct/{id}")
     @Operation(summary = "Delete a product", description = "Remove a product from the system using its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
