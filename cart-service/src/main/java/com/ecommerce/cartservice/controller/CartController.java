@@ -46,16 +46,16 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Cart> findById(@PathVariable Long id) {
-        return cartRepository.findById(id)
+    @GetMapping("/findCartByCartId/{cartId}")
+    public ResponseEntity<Cart> findCartByCartId(@PathVariable Long cartId) {
+        return cartRepository.findById(cartId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId) {
+    @GetMapping("/findAllCartOfSpecificUser/{userId}")
+    public ResponseEntity<List<CartDto>> findAllCartOfSpecificUser(@PathVariable Long userId) {
         List<Cart> carts = cartRepository.findByUserId(userId);
         List<CartDto> result = carts.stream().map(cart -> {
             ProductDto product = productClient.getProductById(cart.getProductId());
@@ -80,9 +80,9 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cart> update(@PathVariable Long id, @Valid @RequestBody Cart cart) {
-        return cartRepository.findById(id)
+    @PutMapping("/updateCart/{cartId}")
+    public ResponseEntity<Cart> updateCart(@PathVariable Long cartId, @Valid @RequestBody Cart cart) {
+        return cartRepository.findById(cartId)
                 .map(existingCart -> {
                     existingCart.setUserId(cart.getUserId());
                     existingCart.setProductId(cart.getProductId());
@@ -93,10 +93,10 @@ public class CartController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (cartRepository.existsById(id)) {
-            cartRepository.deleteById(id);
+    @DeleteMapping("/deleteCartByCartId/{cartId}")
+    public ResponseEntity<Void> deleteCartByCartId(@PathVariable Long cartId) {
+        if (cartRepository.existsById(cartId)) {
+            cartRepository.deleteById(cartId);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

@@ -1,0 +1,12 @@
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\config\SwaggerConfig.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\controller\ProductController.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\dto\ProductDto.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\entity\Product.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\exception\ErrorResponse.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\exception\GlobalExceptionHandler.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\exception\ProductAlreadyExistsException.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\exception\ProductNotFoundException.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\ProductServiceApplication.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\repository\ProductRepository.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\service\ProductService.java
+C:\Users\ravimishra\ravi\hcl\ecommerce\ecommerce\product-service\src\main\java\com\ecommerce\productservice\serviceImpl\ProductServiceImpl.java
